@@ -31,33 +31,28 @@ class LoginVC: UIViewController {
     }
     
     @objc func getStartedButtonTapped() {
-        GIDSignIn.sharedInstance.signIn(
-            withPresenting: self) { signInResult, error in
-                guard let result = signInResult, error == nil else {
-                    print("Sign-in failed with error: \(error?.localizedDescription ?? "Unknown error")")
-                    return
-                }
-                
-                let user = result.user
-                let id = user.userID
-                let name = user.profile?.name
-                let email = user.profile?.email
-                let photoURL = user.profile?.imageURL(withDimension: 100)
-                
-                print("User ID: \(id ?? "No ID")")
-                print("Name: \(name ?? "No Name")")
-                print("Email: \(email ?? "No Email")")
-                print("Photo URL: \(photoURL?.absoluteString ?? "No Photo URL")")
-                
-                let homeVC = THTabBarController()
-                if let navigationController = self.navigationController {
-                    navigationController.pushViewController(homeVC, animated: true)
-                } else {
-                    let navigationController = UINavigationController(rootViewController: homeVC)
-                    navigationController.modalPresentationStyle = .fullScreen
-                    self.present(navigationController, animated: true, completion: nil)
-                }
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+            guard let result = signInResult, error == nil else {
+                print("Sign-in failed with error: \(error?.localizedDescription ?? "Unknown error")")
+                return
             }
+
+            let user = result.user
+            let id = user.userID
+            let name = user.profile?.name
+            let email = user.profile?.email
+            let photoURL = user.profile?.imageURL(withDimension: 100)
+
+            let tabBarVC = THTabBarController(userID: id, userName: name, userEmail: email, userPhotoURL: photoURL)
+
+            if let navigationController = self.navigationController {
+                navigationController.pushViewController(tabBarVC, animated: true)
+            } else {
+                let navigationController = UINavigationController(rootViewController: tabBarVC)
+                navigationController.modalPresentationStyle = .fullScreen
+                self.present(navigationController, animated: true, completion: nil)
+            }
+        }
     }
 
 
