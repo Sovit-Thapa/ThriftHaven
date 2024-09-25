@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A8D1F112CA4B5280015828A /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5A8D1F102CA4B5280015828A /* FirebaseDatabase */; };
 		5AC73C322CA31E1200EBCFEF /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC73C312CA31E1200EBCFEF /* GoogleSignIn */; };
 		5AC73C342CA31E1200EBCFEF /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC73C332CA31E1200EBCFEF /* GoogleSignInSwift */; };
 		5AC73C372CA31E4500EBCFEF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC73C362CA31E4500EBCFEF /* FirebaseAuth */; };
@@ -43,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A8D1F112CA4B5280015828A /* FirebaseDatabase in Frameworks */,
 				5AC73C322CA31E1200EBCFEF /* GoogleSignIn in Frameworks */,
 				5AC73C392CA31E4500EBCFEF /* FirebaseFirestore in Frameworks */,
 				5AC73C372CA31E4500EBCFEF /* FirebaseAuth in Frameworks */,
@@ -93,6 +95,7 @@
 				5AC73C332CA31E1200EBCFEF /* GoogleSignInSwift */,
 				5AC73C362CA31E4500EBCFEF /* FirebaseAuth */,
 				5AC73C382CA31E4500EBCFEF /* FirebaseFirestore */,
+				5A8D1F102CA4B5280015828A /* FirebaseDatabase */,
 			);
 			productName = ThriftHaven;
 			productReference = 5AB69DAA2CA117AE00938ADC /* ThriftHaven.app */;
@@ -371,6 +374,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5A8D1F102CA4B5280015828A /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AC73C352CA31E4500EBCFEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
 		5AC73C312CA31E1200EBCFEF /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5AC73C302CA31E1200EBCFEF /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;

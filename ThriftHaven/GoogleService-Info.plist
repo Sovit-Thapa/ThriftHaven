@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCLRXqFyhbOB8hQg-dLNpOsLBld9ZvG2Xs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>993231305924</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.sovit.ThriftHaven</string>
+	<key>PROJECT_ID</key>
+	<string>thrifthaven-76a8a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>thrifthaven-76a8a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:993231305924:ios:9965fe48f855e79e57dd91</string>
+</dict>
+</plist>

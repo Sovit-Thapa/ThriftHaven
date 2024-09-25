@@ -1,4 +1,12 @@
+//
+//  THTabBarController.swift
+//  ThriftHaven
+//
+//  Created by Sovit Thapa on 2024-09-22.
+//
+
 import UIKit
+import FirebaseFirestore
 
 class THTabBarController: UITabBarController {
 
@@ -6,6 +14,7 @@ class THTabBarController: UITabBarController {
     var userName: String!
     var userEmail: String!
     var userPhotoURL: URL?
+    var firestoreDB: Firestore!
 
     init(userID: String?, userName: String?, userEmail: String?, userPhotoURL: URL?) {
         self.userID = userID
@@ -22,7 +31,9 @@ class THTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("User Name: \(userName ?? "No User Name")")
+        firestoreDB = Firestore.firestore()
+
+        fetchCategories()
 
         viewControllers = [
             createHomeVC(),
@@ -30,6 +41,22 @@ class THTabBarController: UITabBarController {
             createAddPostVC(),
             createUserDetailsVC(),
         ]
+    }
+
+    func fetchCategories() {
+        firestoreDB.collection("Category").getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Error fetching categories: \(error)")
+                return
+            }
+
+            for document in snapshot!.documents {
+                let data = document.data()
+                let icon = data["icon"] as? String ?? "No Icon"
+                let name = data["name"] as? String ?? "No Name"
+                print("Category - Icon: \(icon), Name: \(name)")
+            }
+        }
     }
 
     func createHomeVC() -> UINavigationController {
@@ -43,7 +70,7 @@ class THTabBarController: UITabBarController {
         homeVC.tabBarItem = UITabBarItem(title: "Home", image: homeImage, tag: 0)
         
         let navigationController = UINavigationController(rootViewController: homeVC)
-        navigationController.navigationBar.prefersLargeTitles = false 
+        navigationController.navigationBar.prefersLargeTitles = false
         return navigationController
     }
 

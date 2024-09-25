@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import Firebase
 
-class HomeVC: UIViewController {
+class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
     let slidersImageView = THImageView(frame: .zero)
     var imageArray = [UIImage]()
@@ -18,8 +19,22 @@ class HomeVC: UIViewController {
     var userEmail: String?
     var userPhotoURL: URL?
     let homeLabel = THTitleLabel(textAlignment: .left, fontSize: 28)
+    let categoriesLabel = THTitleLabel(textAlignment: .left, fontSize: 20)
     let userImageView = THImageView(frame: .zero)
+    let arrowSFImageView = THImageView(frame: .zero)
+    let latestProductsLabel = THTitleLabel(textAlignment: .left, fontSize: 20)
     
+    let categoryCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .white
+        return collectionView
+    }()
+
+    var categories: [Category] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,28 +46,44 @@ class HomeVC: UIViewController {
         view.addSubview(homeLabel)
         view.addSubview(userImageView)
         view.addSubview(slidersImageView)
-        configureHomeLabel()
+        view.addSubview(categoriesLabel)
+        view.addSubview(arrowSFImageView)
+        view.addSubview(categoryCollectionView)
+        view.addSubview(latestProductsLabel)
         setupImageArray()
+        configureHomeLabel()
         configureUserImage()
         configureSlidersImage()
-        startImageSlideshow()
+        
+        configureCategoriesLabel()
+        configureArrowSFImageView()
+        setupCategoryCollectionView()
+        configureLatestProductsLabel()
+        fetchCategories()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         navigationController?.setNavigationBarHidden(true, animated: true)
         startImageSlideshow()
     }
-    
+
     func configureHomeLabel() {
         homeLabel.text = "Home"
         NSLayoutConstraint.activate([
-            homeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -20),
+            homeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -15),
             homeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
         ])
     }
     
+    func configureCategoriesLabel() {
+        categoriesLabel.text = "Categories"
+        NSLayoutConstraint.activate([
+            categoriesLabel.topAnchor.constraint(equalTo: slidersImageView.bottomAnchor, constant: 10),
+            categoriesLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+        ])
+    }
+
     func configureUserImage() {
         guard let userPhotoURL = userPhotoURL else {
             userImageView.image = UIImage(named: "defaultProfileImage")
@@ -75,7 +106,7 @@ class HomeVC: UIViewController {
         userImageView.layer.cornerRadius = 25
         userImageView.clipsToBounds = true
         NSLayoutConstraint.activate([
-            userImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -30),
+            userImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -25),
             userImageView.leadingAnchor.constraint(equalTo: homeLabel.trailingAnchor),
             userImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             userImageView.heightAnchor.constraint(equalToConstant: 50),
@@ -83,6 +114,14 @@ class HomeVC: UIViewController {
         ])
     }
     
+    func configureLatestProductsLabel() {
+        latestProductsLabel.text = "Latest Products"
+        NSLayoutConstraint.activate([
+            latestProductsLabel.topAnchor.constraint(equalTo: categoryCollectionView.bottomAnchor, constant: 5),
+            latestProductsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+        ])
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
@@ -98,6 +137,20 @@ class HomeVC: UIViewController {
         } else {
             print("One or more images could not be loaded")
         }
+    }
+    
+    func configureArrowSFImageView() {
+        arrowSFImageView.translatesAutoresizingMaskIntoConstraints = false
+            arrowSFImageView.image = UIImage(systemName: "arrow.right")
+            arrowSFImageView.tintColor = .black
+        
+        NSLayoutConstraint.activate([
+            arrowSFImageView.topAnchor.constraint(equalTo: slidersImageView.bottomAnchor, constant: 10),
+            arrowSFImageView.leadingAnchor.constraint(equalTo: categoriesLabel.trailingAnchor),
+            arrowSFImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            arrowSFImageView.heightAnchor.constraint(equalToConstant: 25),
+            arrowSFImageView.widthAnchor.constraint(equalToConstant: 30)
+        ])
     }
 
     func configureSlidersImage() {
@@ -126,5 +179,51 @@ class HomeVC: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         imageChangeTimer?.invalidate()
+    }
+    
+    func setupCategoryCollectionView() {
+        categoryCollectionView.delegate = self
+        categoryCollectionView.dataSource = self
+        
+        if let layout = categoryCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            let totalWidth = UIScreen.main.bounds.width
+            let itemWidth = totalWidth / 5
+            let itemHeight: CGFloat = 100
+            layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
+            layout.minimumLineSpacing = 10
+            layout.minimumInteritemSpacing = 10
+        }
+        
+        categoryCollectionView.register(CategoryCell.self, forCellWithReuseIdentifier: "CategoryCell")
+        
+        NSLayoutConstraint.activate([
+            categoryCollectionView.topAnchor.constraint(equalTo: categoriesLabel.bottomAnchor, constant: 15),
+            categoryCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            categoryCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            categoryCollectionView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+    }
+
+
+    func fetchCategories() {
+        CategoryService.shared.fetchCategories { [weak self] categories in
+            self?.categories = categories
+            DispatchQueue.main.async {
+                self?.categoryCollectionView.reloadData()
+            }
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return categories.count
+    }
+    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
+        let category = categories[indexPath.item]
+        cell.configure(with: category)
+        return cell
     }
 }
