@@ -24,7 +24,6 @@ class UserDetailsVC: UIViewController {
         if let userEmail = userEmail {
             print("User Email: \(userEmail)")
         }
-
     }
 }
 

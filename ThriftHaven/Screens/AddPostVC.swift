@@ -9,21 +9,26 @@ import UIKit
 
 class AddPostVC: UIViewController {
 
+    let addPostLabel = THTitleLabel(textAlignment: .left, fontSize: 28)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemYellow
-        // Do any additional setup after loading the view.
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        view.addSubview(addPostLabel)
+        configureAddPostLabel()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func configureAddPostLabel() {
+        addPostLabel.text = "Add Post"
+        NSLayoutConstraint.activate([
+            addPostLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -15),
+            addPostLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+        ])
     }
-    */
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
 
 }
