@@ -14,16 +14,27 @@ class UserDetailsVC: UIViewController {
     var userEmail: String?
     var userPhotoURL: URL?
 
+    let myProfileLabel = THTitleLabel(textAlignment: .left, fontSize: 28)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemGreen
-
-        if let userName = userName {
-            print("User Name: \(userName)")
-        }
-        if let userEmail = userEmail {
-            print("User Email: \(userEmail)")
-        }
+        view.backgroundColor = .systemBackground
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        view.addSubview(myProfileLabel)
+        configureMyProfileLabel()
+    }
+    
+    func configureMyProfileLabel() {
+        myProfileLabel.text = "My Profile"
+        NSLayoutConstraint.activate([
+            myProfileLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            myProfileLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+        ])
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
 }
 

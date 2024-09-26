@@ -13,6 +13,7 @@ class AddPostVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         navigationController?.setNavigationBarHidden(true, animated: false)
         view.addSubview(addPostLabel)
         configureAddPostLabel()
@@ -20,8 +21,9 @@ class AddPostVC: UIViewController {
     
     func configureAddPostLabel() {
         addPostLabel.text = "Add Post"
+        
         NSLayoutConstraint.activate([
-            addPostLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -15),
+            addPostLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             addPostLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
         ])
     }
