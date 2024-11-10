@@ -44,7 +44,7 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         view.backgroundColor = .systemBackground
         
         searchBar.delegate = self
-        searchBar.placeholder = "Search for products or categories"
+        searchBar.placeholder = "Search for products"
         
         view.addSubview(searchBar)
         view.addSubview(homeLabel)
