@@ -39,13 +39,15 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
+        fetchCategories()
+    }
 
+    func setupUI() {
         navigationController?.setNavigationBarHidden(true, animated: false)
         view.backgroundColor = .systemBackground
-        
-        searchBar.delegate = self
-        searchBar.placeholder = "Search for products"
-        
+
+        // Add views and configure them
         view.addSubview(searchBar)
         view.addSubview(homeLabel)
         view.addSubview(userImageView)
@@ -64,20 +66,36 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         configureArrowSFImageView()
         setupCategoryCollectionView()
         configureLatestProductsLabel()
-        fetchCategories()
         setupKeyboardDismissal()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: true)
-        startImageSlideshow()
+    func setupImageArray() {
+        if let sale1 = Images.sale1,
+           let sale2 = Images.sale2,
+           let sale3 = Images.sale3,
+           let sale4 = Images.sale4 {
+            imageArray = [sale1, sale2, sale3, sale4]
+        } else {
+            print("One or more images could not be loaded")
+        }
+    }
+
+    func fetchCategories() {
+        CategoryService.shared.fetchCategories { [weak self] categories in
+            self?.categories = categories
+            self?.filteredCategories = categories
+            DispatchQueue.main.async {
+                self?.categoryCollectionView.reloadData()
+            }
+        }
     }
 
     func configureSearchBar() {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.placeholder = "Search for products"
+        searchBar.delegate = self
         NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             searchBar.heightAnchor.constraint(equalToConstant: 44)
@@ -91,7 +109,7 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
             homeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
         ])
     }
-    
+
     func configureCategoriesLabel() {
         categoriesLabel.text = "Categories"
         NSLayoutConstraint.activate([
@@ -122,49 +140,10 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         userImageView.layer.cornerRadius = 25
         userImageView.clipsToBounds = true
         NSLayoutConstraint.activate([
-            userImageView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 0),
+            userImageView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             userImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             userImageView.heightAnchor.constraint(equalToConstant: 50),
             userImageView.widthAnchor.constraint(equalToConstant: 50)
-        ])
-    }
-
-    func configureLatestProductsLabel() {
-        latestProductsLabel.text = "Latest Products"
-        NSLayoutConstraint.activate([
-            latestProductsLabel.topAnchor.constraint(equalTo: categoryCollectionView.bottomAnchor, constant: 5),
-            latestProductsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-        ])
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        imageChangeTimer?.invalidate()
-    }
-
-    func setupImageArray() {
-        if let sale1 = Images.sale1,
-           let sale2 = Images.sale2,
-           let sale3 = Images.sale3,
-           let sale4 = Images.sale4 {
-            imageArray = [sale1, sale2, sale3, sale4]
-        } else {
-            print("One or more images could not be loaded")
-        }
-    }
-    
-    func configureArrowSFImageView() {
-        arrowSFImageView.translatesAutoresizingMaskIntoConstraints = false
-        arrowSFImageView.image = UIImage(systemName: "arrow.right")
-        arrowSFImageView.tintColor = .black
-        
-        NSLayoutConstraint.activate([
-            arrowSFImageView.topAnchor.constraint(equalTo: slidersImageView.bottomAnchor, constant: 10),
-            arrowSFImageView.leadingAnchor.constraint(equalTo: categoriesLabel.trailingAnchor),
-            arrowSFImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            arrowSFImageView.heightAnchor.constraint(equalToConstant: 25),
-            arrowSFImageView.widthAnchor.constraint(equalToConstant: 30)
         ])
     }
 
@@ -185,20 +164,38 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         imageChangeTimer?.invalidate()
         imageChangeTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(changeImage), userInfo: nil, repeats: true)
     }
-    
+
     @objc func changeImage() {
         currentImageIndex = (currentImageIndex + 1) % imageArray.count
         slidersImageView.image = imageArray[currentImageIndex]
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        imageChangeTimer?.invalidate()
+    func configureArrowSFImageView() {
+        arrowSFImageView.translatesAutoresizingMaskIntoConstraints = false
+        arrowSFImageView.image = UIImage(systemName: "arrow.right")
+        arrowSFImageView.tintColor = .black
+        
+        NSLayoutConstraint.activate([
+            arrowSFImageView.topAnchor.constraint(equalTo: slidersImageView.bottomAnchor, constant: 10),
+            arrowSFImageView.leadingAnchor.constraint(equalTo: categoriesLabel.trailingAnchor),
+            arrowSFImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            arrowSFImageView.heightAnchor.constraint(equalToConstant: 25),
+            arrowSFImageView.widthAnchor.constraint(equalToConstant: 30)
+        ])
     }
-    
+
+    func configureLatestProductsLabel() {
+        latestProductsLabel.text = "Latest Products"
+        NSLayoutConstraint.activate([
+            latestProductsLabel.topAnchor.constraint(equalTo: categoryCollectionView.bottomAnchor, constant: 5),
+            latestProductsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+        ])
+    }
+
     func setupCategoryCollectionView() {
         categoryCollectionView.delegate = self
         categoryCollectionView.dataSource = self
+        categoryCollectionView.backgroundColor = UIColor.systemBackground
         
         if let layout = categoryCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             let totalWidth = UIScreen.main.bounds.width
@@ -219,16 +216,6 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         ])
     }
 
-    func fetchCategories() {
-        CategoryService.shared.fetchCategories { [weak self] categories in
-            self?.categories = categories
-            self?.filteredCategories = categories
-            DispatchQueue.main.async {
-                self?.categoryCollectionView.reloadData()
-            }
-        }
-    }
-
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return filteredCategories.count
     }
@@ -239,24 +226,32 @@ class HomeVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSo
         cell.configure(with: category)
         return cell
     }
-    
-        func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-            searchBar.resignFirstResponder()
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredCategories = categories.filter { category in
+            category.name.lowercased().contains(searchText.lowercased())
         }
+        categoryCollectionView.reloadData()
+    }
 
+    func setupKeyboardDismissal() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
 
-        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-  
-        }
+    @objc func dismissKeyboard() {
+        searchBar.resignFirstResponder()
+    }
 
-        func setupKeyboardDismissal() {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-            view.addGestureRecognizer(tapGesture)
-        }
-
-        @objc func dismissKeyboard() {
-            searchBar.resignFirstResponder()
-        }
-
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        imageChangeTimer?.invalidate()
+    }
 }
+
 

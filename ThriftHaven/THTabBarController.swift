@@ -52,9 +52,8 @@ class THTabBarController: UITabBarController {
 
             for document in snapshot!.documents {
                 let data = document.data()
-                let icon = data["icon"] as? String ?? "No Icon"
-                let name = data["name"] as? String ?? "No Name"
-                print("Category - Icon: \(icon), Name: \(name)")
+                _ = data["icon"] as? String ?? "No Icon"
+                _ = data["name"] as? String ?? "No Name"
             }
         }
     }

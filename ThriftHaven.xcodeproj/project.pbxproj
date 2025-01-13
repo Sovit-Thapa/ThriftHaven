@@ -12,6 +12,7 @@
 		5AC73C342CA31E1200EBCFEF /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC73C332CA31E1200EBCFEF /* GoogleSignInSwift */; };
 		5AC73C372CA31E4500EBCFEF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC73C362CA31E4500EBCFEF /* FirebaseAuth */; };
 		5AC73C392CA31E4500EBCFEF /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC73C382CA31E4500EBCFEF /* FirebaseFirestore */; };
+		5AE2F2792D353D1100537F7C /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5AE2F2782D353D1100537F7C /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 				5AC73C392CA31E4500EBCFEF /* FirebaseFirestore in Frameworks */,
 				5AC73C372CA31E4500EBCFEF /* FirebaseAuth in Frameworks */,
 				5AC73C342CA31E1200EBCFEF /* GoogleSignInSwift in Frameworks */,
+				5AE2F2792D353D1100537F7C /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +98,7 @@
 				5AC73C362CA31E4500EBCFEF /* FirebaseAuth */,
 				5AC73C382CA31E4500EBCFEF /* FirebaseFirestore */,
 				5A8D1F102CA4B5280015828A /* FirebaseDatabase */,
+				5AE2F2782D353D1100537F7C /* FirebaseStorage */,
 			);
 			productName = ThriftHaven;
 			productReference = 5AB69DAA2CA117AE00938ADC /* ThriftHaven.app */;
@@ -404,6 +407,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5AC73C352CA31E4500EBCFEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		5AE2F2782D353D1100537F7C /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AC73C352CA31E4500EBCFEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
